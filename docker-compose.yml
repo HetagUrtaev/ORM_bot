@@ -1,0 +1,17 @@
+services:
+
+  orm_bot_app:
+    container_name: 'ORM-bot'
+    build:
+      context: .
+    networks:
+      - myNetwork
+    env_file: .env
+    command: sh -c "PYTHONPATH=. alembic upgrade head && PYTHONPATH=. python src/main_bot.py"
+
+
+
+
+networks:
+  myNetwork:
+    external: true

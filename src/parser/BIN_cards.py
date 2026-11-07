@@ -1,9 +1,11 @@
 import aiohttp
+
+from src.config import Settings
 from src.exceptions import BinAPIError
 
 
 async def get_bin_cards(bin_cards: str) -> str:
-    my_headers = {"x-api-key": "HAS-140cYW2Q84HBWT5gk7jPZXU"}
+    my_headers = {"x-api-key": Settings.KEY_BIN}
     url = f'https://data.handyapi.com/bin/{bin_cards}'
 
     async with aiohttp.ClientSession() as session:
