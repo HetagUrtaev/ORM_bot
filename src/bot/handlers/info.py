@@ -30,12 +30,12 @@ async def get_telegram_data(message: types.Message):
         last_activity_at=current_time,
     )
 
-    await message.answer(f'Ваш юзер ID: {data_user.telegram_id}\n'
-            f'Имя пользователя: {data_user.first_name or "Не указано"}\n'
-            f'Фамилия пользователя: {data_user.last_name or "Не указано"}\n'
-            f'Никнейм: @{data_user.username or "Не найдено"}\n'
-            f'Язык интерфейса приложения Telegram: {data_user.language_code or "Не определен"}\n'
-            f'Есть ли премиум подписка Telegram: {"Да" if data_user.is_premium else "Нет"}\n')
+    await message.answer(f'🆔 Ваш юзер ID: {data_user.telegram_id}\n'
+            f'👤 Имя пользователя: {data_user.first_name or "Не указано"}\n'
+            f'👥 Фамилия пользователя: {data_user.last_name or "Не указано"}\n'
+            f'🔗 Никнейм: @{data_user.username or "Не найдено"}\n'
+            f'🌐 Язык интерфейса приложения Telegram: {data_user.language_code or "Не определен"}\n'
+            f'⭐️ Есть ли премиум подписка Telegram: {"Да" if data_user.is_premium else "Нет"}\n')
 
 
     async with async_session_maker() as session:

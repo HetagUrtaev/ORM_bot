@@ -12,6 +12,8 @@ docker run --name ORM-db \
     --network=myNetwork \
     --volume pg_data:/var/lib/postgresql \
     -d postgres:18
+_ls)
+
 
 # Вариант для Windows (PowerShell):
 docker run --name ORM-db `

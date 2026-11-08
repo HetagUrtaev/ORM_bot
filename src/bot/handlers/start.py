@@ -9,7 +9,7 @@ router = Router(name="start")
 @router.message(Command("start"))
 async def cmd_start(message: types.Message):
     kb = [
-        [types.KeyboardButton(text="Информация о себе")],
+        [types.KeyboardButton(text="Информация о себе 👤")],
     ]
     keyboard = types.ReplyKeyboardMarkup(keyboard=kb, resize_keyboard=True,
         input_field_placeholder="Выбери интересующий раздел?")
