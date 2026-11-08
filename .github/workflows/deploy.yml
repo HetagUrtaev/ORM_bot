@@ -3,7 +3,7 @@ name: CI/CD Deploy to Selectel
 on:
   push:
     branches:
-      - main
+      - master
 
 jobs:
   deploy:
@@ -20,7 +20,8 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           source: "."
-          target: "/root/ORM_bot"
+          target: "/root/projec/ORM_bot"
+          exclude: ".git/*,.github/*,README.md"
 
       - name: Executing remote ssh commands to deploy
         uses: appleboy/ssh-action@master
@@ -29,6 +30,7 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            cd /root/ORM_bot
+            cd /root/projec/ORM_bot
             docker compose down
             docker compose up --build -d
+            docker image prune -f
