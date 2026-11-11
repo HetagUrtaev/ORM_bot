@@ -9,14 +9,14 @@ from src.schemas.users import UserResponse
 
 
 
-router = Router(name="info_router")
+router = Router(name="user_info_router")
 
 
-@router.message(F.text.lower() == 'информация о себе')
-async def get_telegram_data(message: types.Message):
-    is_premium_status = bool(message.from_user.is_premium)
+@router.callback_query(F.data == 'user_info')
+async def get_telegram_data(callback: types.CallbackQuery):
+    is_premium_status = bool(callback.from_user.is_premium)
     current_time = datetime.now()
-    u = message.from_user
+    u = callback.from_user
 
     data_user = UserResponse(
         telegram_id=u.id,
@@ -30,12 +30,26 @@ async def get_telegram_data(message: types.Message):
         last_activity_at=current_time,
     )
 
-    await message.answer(f'🆔 Ваш юзер ID: {data_user.telegram_id}\n'
+    info_text = (f'🆔 Ваш юзер ID: {data_user.telegram_id}\n'
             f'👤 Имя пользователя: {data_user.first_name or "Не указано"}\n'
             f'👥 Фамилия пользователя: {data_user.last_name or "Не указано"}\n'
             f'🔗 Никнейм: @{data_user.username or "Не найдено"}\n'
             f'🌐 Язык интерфейса приложения Telegram: {data_user.language_code or "Не определен"}\n'
             f'⭐️ Есть ли премиум подписка Telegram: {"Да" if data_user.is_premium else "Нет"}\n')
+
+    keyboard = types.InlineKeyboardMarkup(
+        inline_keyboard=[
+            [
+                types.InlineKeyboardButton(
+                    text="⬅️ Назад в меню",
+                    callback_data="back_to_menu",
+                )
+            ]
+        ]
+    )
+
+    await callback.message.answer(info_text, reply_markup=keyboard, parse_mode="HTML")
+    await callback.answer()
 
 
     async with async_session_maker() as session:
