@@ -2,12 +2,13 @@ from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy import delete, insert, select, update
 from pydantic import BaseModel
 
+from src.repositories.mappers.base import DataMapper
 
 data_user = None
 
 class BaseRepository:
     model = None
-    schemas: BaseModel = None
+    mapper: DataMapper = None
 
 
     def __init__(self, session):
@@ -19,7 +20,7 @@ class BaseRepository:
         model = result.scalars().one_or_none()
         if model is None:
             return None
-        return self.schemas.model_validate(model, from_attributes=True)
+        return self.mapper.map_to_domain_entity(model)
 
     async def add(self, data: BaseModel):
         add_data_stmt = (
