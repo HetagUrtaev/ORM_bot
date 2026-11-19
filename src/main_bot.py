@@ -3,16 +3,17 @@ import asyncio
 from aiogram import Bot, Dispatcher
 
 from src.bot.handlers import get_routers
+from src.bot.middlewares.db import DBMiddleware
 from src.config import settings
 
 
+
 async def main() -> None:
-
     bot = Bot(token=settings.TOKEN)
-
     dp = Dispatcher()
-
+    dp.update.middleware(DBMiddleware())
     dp.include_routers(*get_routers())
+
 
     print("🚀 Запуск бота...")
     try:
