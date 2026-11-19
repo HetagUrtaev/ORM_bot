@@ -1,4 +1,3 @@
-from datetime import datetime
 from aiogram import Router, F, types
 
 from src.services.users import UserService
@@ -10,8 +9,6 @@ router = Router(name="user_info_router")
 @router.callback_query(F.data == 'user_info')
 async def get_telegram_data(callback: types.CallbackQuery, db: DBManager) -> None:
     user = callback.from_user
-
-
 
     info_text = (f'🆔 Ваш юзер ID: {user.id}\n'
             f'👤 Имя пользователя: {user.first_name or "Не указано"}\n'
@@ -34,4 +31,3 @@ async def get_telegram_data(callback: types.CallbackQuery, db: DBManager) -> Non
     await callback.message.answer(info_text, reply_markup=keyboard, parse_mode="HTML")
     await callback.answer()
     await UserService(db).upsert_from_tg(user)
-

@@ -2,12 +2,13 @@ from sqlalchemy.dialects.postgresql import insert
 
 from src.models import UsersOrm
 from src.repositories.base import BaseRepository
+from src.repositories.mappers.mappers import UsersDataMapper
 from src.schemas.users import UserResponse
 
 
 class UsersRepository(BaseRepository):
     model = UsersOrm
-    schemas = UserResponse
+    mapper = UsersDataMapper
 
     async def upsert(self, data: UserResponse) -> None:
         stmt = insert(self.model).values(**data.model_dump())

@@ -7,7 +7,6 @@ from src.utils.db_manager import DBManager
 
 router = Router(name="start")
 
-
 async def send_main_menu(event: types.Message | types.CallbackQuery) -> None:
     text = "👋 Добро пожаловать!"
     keyboard = get_main_menu_keyboard()
@@ -17,7 +16,6 @@ async def send_main_menu(event: types.Message | types.CallbackQuery) -> None:
         await event.answer()
     else:
         await event.answer(text, reply_markup=keyboard)
-
 
 
 @router.message(Command("start"))
