@@ -1,40 +1,59 @@
-from aiogram import Router, F
+from aiogram import Router, F, types
 from aiogram.fsm.context import FSMContext
-from aiogram.fsm.state import StatesGroup, State
-from aiogram.types import Message
+from aiogram.fsm.state import State, StatesGroup
 
 from src.exceptions import PhoneAPIError
 from src.parser.phone_region import get_region_by_phone
 
 
-class TestStates(StatesGroup):
-    wait_phone = State()
+router = Router(name="parsers_router")
+
+class PhoneForm(StatesGroup):
+    waiting_for_number = State()
+
+def get_back_keyboard() -> types.InlineKeyboardMarkup:
+    return types.InlineKeyboardMarkup(
+        inline_keyboard=[
+            [types.InlineKeyboardButton(text="⬅️ Назад в меню", callback_data="back_to_menu")]
+        ]
+    )
 
 
-router = Router()
+@router.callback_query(F.data == "phone_region")
+async def ask_phone_number(callback: types.CallbackQuery, state: FSMContext) -> None:
+    await state.set_state(PhoneForm.waiting_for_number)
+    await callback.message.answer(
+        "📞 Введите номер телефона в международном формате (например, `+79991234567`):",
+        reply_markup=get_back_keyboard(),
+        parse_mode="Markdown",
+    )
+    await callback.answer()
 
 
-@router.message(F.text == 'Узнать регион по номеру')
-async def phone_region(message: Message, state: FSMContext):
-    await message.answer("Введите номер телефона:")
-    await state.set_state(TestStates.wait_phone)
+@router.message(PhoneForm.waiting_for_number)
+async def process_phone_number(message: types.Message) -> None:
 
-
-@router.message(TestStates.wait_phone)
-async def process_phone_input(message: Message, state: FSMContext):
     if not message.text:
-        await message.answer("⚠️ Пожалуйста, отправьте номер телефона текстом:")
+        await message.answer(
+            "⚠️ Пожалуйста, отправьте номер телефона текстом:",
+            reply_markup = get_back_keyboard(),
+            parse_mode = "Markdown",
+            )
         return
 
     user_phone = message.text.strip()
 
-    await message.answer("⏳ Проверяю номер, подождите...")
-
     try:
         result = await get_region_by_phone(user_phone)
-        await message.answer(f"📍 Результат проверки:\n⚡ {result}")
-        await state.clear()
+        await message.answer(
+            f"📍 Результат проверки:\n⚡ {result}",
+            reply_markup=get_back_keyboard()
+        )
+
 
     except PhoneAPIError:
-        await message.answer("⚠️ Не удалось получить данные. Проверьте правильность номера или попробуйте позже.")
-        await state.clear()
+        await message.answer(
+            "⚠️ Не удалось получить данные. Проверьте правильность "
+            "номера или попробуйте позже.",
+            reply_markup=get_back_keyboard()
+        )

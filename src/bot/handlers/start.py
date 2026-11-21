@@ -1,5 +1,6 @@
 from aiogram import Router, F, types
 from aiogram.filters import Command
+from aiogram.fsm.context import FSMContext
 
 from src.bot.keyboards.main_menu import get_main_menu_keyboard
 from src.services.users import UserService
@@ -25,7 +26,8 @@ async def start_handler(message: types.Message, db: DBManager) -> None:
         await UserService(db).upsert_from_tg(message.from_user)
 
 @router.callback_query(F.data == "back_to_menu")
-async def back_to_menu_handler(callback: types.CallbackQuery) -> None:
+async def back_to_menu_handler(callback: types.CallbackQuery, state: FSMContext) -> None:
+    await state.clear()
     await send_main_menu(callback)
 
 

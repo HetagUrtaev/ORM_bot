@@ -15,7 +15,7 @@ class Settings(BaseSettings):
 
     TOKEN: str
     KEY_BIN: str
-    #KEY_PHON: str
+    KEY_PHON: str
 
 
     @property
