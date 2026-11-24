@@ -32,7 +32,7 @@ async def ask_phone_number(callback: types.CallbackQuery, state: FSMContext) -> 
 
 @router.message(PhoneForm.waiting_for_number)
 async def process_phone_number(message: types.Message) -> None:
-
+    print("1. Хендлер сработал! Текст:", message.text)
     if not message.text:
         await message.answer(
             "⚠️ Пожалуйста, отправьте номер телефона текстом:",
@@ -44,6 +44,7 @@ async def process_phone_number(message: types.Message) -> None:
     user_phone = message.text.strip()
 
     try:
+        print("2. Вызываем get_region_by_phone...")
         result = await get_region_by_phone(user_phone)
         await message.answer(
             f"📍 Результат проверки:\n⚡ {result}",
