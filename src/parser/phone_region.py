@@ -18,16 +18,20 @@ def normalize_phone(raw_phone: str) -> str: # покрыть тестом
     return digits
 
 
-async def get_region_by_phone(phone: str) -> str:
+async def get_region_by_phone(phone: str, user_id: int | None = None) -> str:
     clean_phone = normalize_phone(phone)
     cache_key = f"phone:{clean_phone}"
 
     phone_from_cache = await redis_manager.get(cache_key)
     if phone_from_cache:
-        print('достаю номер с кеша')
         return phone_from_cache
 
-    print('Делаю запрос на сайт')
+    if user_id and redis_manager.redis:
+        throttle_key = f"throttle:user:{user_id}"
+        is_allowed = await redis_manager.redis.set(throttle_key, "1", ex=3, nx=True)
+        if not is_allowed:
+            raise PhoneAPIError
+
     key = settings.KEY_PHON
     my_headers = {"X-API-Key": key}
     url = f"https://num7.ru/v1/lookup?phone={clean_phone}"

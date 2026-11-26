@@ -14,6 +14,7 @@ class Settings(BaseSettings):
 
     REDIS_HOST: str
     REDIS_PORT: int
+    REDIS_PASSWORD: str | None = None
 
     TOKEN: str
     ADMIN_ID: int

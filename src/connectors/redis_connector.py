@@ -4,18 +4,28 @@ from redis.asyncio import Redis
 
 
 class RedisManager:
-    def __init__(self, host: str = "localhost", port: int = 6379):
+    def __init__(
+        self,
+        host: str = "localhost",
+        port: int = 6379,
+        password: str | None = None,
+    ):
         self.host = host
         self.port = port
+        self.password = password
         self.redis: Redis | None = None
 
     async def connect(self) -> None:
-
         logging.info(f"Начинаю подключение к Redis host={self.host}, port={self.port}")
-        self.redis = Redis(host=self.host, port=self.port, decode_responses=True)
+        self.redis = Redis(
+            host=self.host,
+            port=self.port,
+            #username="default",
+            password=self.password,
+            decode_responses=True,
+        )
         await self.redis.ping()
         logging.info(f"Успешное подключение к Redis host={self.host}, port={self.port}")
-
 
     async def set(self, key: str, value: str, expire: int | None = None) -> bool:
 
