@@ -1,5 +1,4 @@
 import aiohttp
-import re
 
 from src.config import settings
 from src.exceptions import PhoneAPIError
@@ -7,7 +6,7 @@ from src.init import redis_manager
 
 
 def normalize_phone(raw_phone: str) -> str: # покрыть тестом
-    digits = re.sub(r"\D", "", raw_phone)
+    digits = "".join(c for c in raw_phone if c.isascii() and c.isdigit())
     if len(digits) < 9 or len(digits) > 15:
         raise PhoneAPIError
 

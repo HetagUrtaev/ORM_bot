@@ -44,8 +44,6 @@ docker run --name ORM-cache `
     -d redis:8.10.1 redis-server --requirepass abcde
 
 
-
-
 # Запуск приложения через docker-compose
 docker compose up --build
 
